@@ -1,14 +1,18 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function UploaderBox() {
   const [url, setUrl] = useState('');
+  const router = useRouter();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle URL submission
-    console.log('Processing URL:', url);
+    if (url.trim()) {
+      // Navigate to the editor page with the URL as a query parameter
+      router.push(`/yt_editor?url=${encodeURIComponent(url)}`);
+    }
   };
 
   return (

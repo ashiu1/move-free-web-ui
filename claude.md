@@ -19,13 +19,25 @@ move-free-web-ui/
 │   │   ├── UploaderBox.tsx         # Hero section with URL input
 │   │   ├── HowItWorks.tsx          # Timeline showing 3-step process
 │   │   ├── EffortlessConversion.tsx # Benefits section with 3 cards
-│   │   └── Footer.tsx              # Footer with links and social media
+│   │   ├── Footer.tsx              # Footer with links and social media
+│   │   └── VideoUploader/          # Video analysis & editing components
+│   │       ├── VideoUploader.tsx   # Main container with sidebar & content area
+│   │       ├── ExerciseListItem.tsx # Sidebar list item for each exercise
+│   │       ├── SourceVideoCard.tsx  # Full video view with analysis stats
+│   │       └── VideoSegmentEditor.tsx # Individual exercise editor (WIP)
+│   ├── yt_editor/
+│   │   └── page.tsx                # Video editor page route
 │   ├── layout.tsx                  # Root layout with fonts and metadata
 │   ├── page.tsx                    # Main landing page (imports all components)
 │   └── globals.css                 # Global styles
 ├── package.json
 └── next.config.ts
 ```
+
+## Routes
+- `/` - Landing page with hero, features, and CTA
+- `/yt_editor` - Video analysis and editing interface
+  - Query params: `url` (the video URL to process)
 
 ## Components Description
 
@@ -42,6 +54,7 @@ move-free-web-ui/
 - Process Video button
 - Client component with form handling
 - Supports YouTube, Vimeo, and direct video URLs
+- On submit: navigates to `/yt_editor?url={videoUrl}`
 
 ### HowItWorks (app/components/HowItWorks.tsx)
 - 3-step process timeline
@@ -64,6 +77,46 @@ move-free-web-ui/
 - Social media icons (Twitter, GitHub, LinkedIn)
 - Copyright with dynamic year
 - Responsive grid layout
+
+### VideoUploader Components (app/components/VideoUploader/)
+
+#### VideoUploader.tsx (Main Component)
+- Container component that manages the video analysis interface
+- Split layout: sidebar (exercise list) + main content area
+- Manages state for:
+  - Analysis data from backend API
+  - Currently selected exercise
+  - Loading states
+- Routes to appropriate sub-component based on selection:
+  - Full Video → SourceVideoCard
+  - Individual Exercise → VideoSegmentEditor
+
+#### ExerciseListItem.tsx
+- Sidebar list item component for each detected exercise
+- Two variants:
+  1. Full Video item (blue play icon, shows duration)
+  2. Exercise segment item (green checkmark, shows time range)
+- Visual states: selected (blue highlight), unselected, hover
+- Clickable to switch main content view
+
+#### SourceVideoCard.tsx
+- Displays full video with embedded YouTube player
+- Shows analysis statistics in 3 cards:
+  - Analysis Status (Complete/Processing)
+  - AI Confidence (percentage)
+  - Total Segments (number of clips)
+- Video controls section with export button
+- Only shown when "Full Video" is selected from sidebar
+
+#### VideoSegmentEditor.tsx (Placeholder - WIP)
+- Individual exercise editing interface
+- Will display:
+  - Video clip for specific exercise
+  - Exercise details (name, timing, duration)
+  - Goal & purpose section
+  - Exercise description
+  - Coaching tips and form cues
+- Currently shows placeholder UI for development
 
 ## Design System
 
@@ -116,9 +169,36 @@ npm run lint     # Run ESLint
 - Transitions for smooth animations
 - **Important**: When updating files, make sure styles are consistent for each recommendation
 
+## Data Structures
+
+### Analysis Data (from Backend API)
+```typescript
+interface Exercise {
+  id: string;
+  name: string;
+  startTime?: string;  // Format: "0:10"
+  endTime?: string;    // Format: "0:20"
+  duration?: string;   // Format: "0:10"
+}
+
+interface AnalysisData {
+  status: string;          // "Complete" | "Processing" | "Failed"
+  confidence: number;      // 0-100
+  totalSegments: number;   // Count of detected exercises
+  videoUrl: string;        // YouTube embed URL
+  exercises: Exercise[];   // Array of detected exercises
+}
+```
+
+**Note**: First exercise in array should always be "Full Video" with id `full-video`
+
 ## State Management
-- Currently using React useState for form inputs
+- Currently using React useState for form inputs and VideoUploader state
 - No global state management yet (consider Zustand or Context API for future features)
+- VideoUploader manages:
+  - analysisData: API response data
+  - selectedExerciseId: Currently viewed exercise
+  - isLoading: API call loading state
 
 ## Notes
 - All components are server components except UploaderBox (needs 'use client')
