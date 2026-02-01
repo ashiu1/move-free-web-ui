@@ -14,6 +14,9 @@ MoveFree is a landing page for a fitness video documentation service that transf
 ```
 move-free-web-ui/
 ├── app/
+│   ├── apis/
+│   │   ├── ExerciseApi.ts          # API functions for backend calls
+│   │   └── ExerciseReactQuery.ts   # React Query hooks (usePostFitnessVideo, etc.)
 │   ├── components/
 │   │   ├── Header.tsx              # Navigation header with logo and menu
 │   │   ├── UploaderBox.tsx         # Hero section with URL input
@@ -25,6 +28,8 @@ move-free-web-ui/
 │   │       ├── ExerciseListItem.tsx # Sidebar list item for each exercise
 │   │       ├── SourceVideoCard.tsx  # Full video view with analysis stats
 │   │       └── VideoSegmentEditor.tsx # Individual exercise editor (WIP)
+│   ├── providers/
+│   │   └── QueryProvider.tsx       # React Query provider wrapper
 │   ├── yt_editor/
 │   │   └── page.tsx                # Video editor page route
 │   ├── layout.tsx                  # Root layout with fonts and metadata
@@ -78,17 +83,56 @@ move-free-web-ui/
 - Copyright with dynamic year
 - Responsive grid layout
 
+### Providers (app/providers/)
+
+#### QueryProvider.tsx
+- Client component wrapper for TanStack Query (React Query)
+- Creates and provides QueryClient instance to the app
+- Default options:
+  - `staleTime`: 60 seconds (data stays fresh for 1 minute)
+  - `refetchOnWindowFocus`: false (prevents refetch on tab switch)
+- Wrapped in `layout.tsx` to make React Query available globally
+
+### API Layer (app/apis/)
+
+#### ExerciseApi.ts
+- Contains raw API functions for backend communication
+- **postFitnessVideo(url)**: Makes POST request to `http://127.0.0.1:5000/exercises`
+  - Sends: `{ url: string }`
+  - Returns: Analysis data with exercises, confidence, status
+- **getExerciseData(url)**: Makes GET request to fetch exercise data
+- Base URL: `http://127.0.0.1:5000`
+
+#### ExerciseReactQuery.ts
+- React Query hooks wrapping API functions
+- **usePostFitnessVideo(url)**: TanStack Query hook for video analysis
+  - Parameters: `url` - The video URL to analyze
+  - Returns React Query object:
+    - `data`: Analysis data from backend
+    - `isLoading`: Boolean indicating request status
+    - `isError`: Boolean indicating error state
+    - `error`: Error object if request fails
+  - Only runs query if URL is provided (enabled by `!!url`)
+- **useExerciseData(url)**: Query hook for fetching exercise data
+
 ### VideoUploader Components (app/components/VideoUploader/)
 
 #### VideoUploader.tsx (Main Component)
 - Container component that manages the video analysis interface
 - Split layout: sidebar (exercise list) + main content area
-- Manages state for:
-  - Analysis data from backend API
-  - Currently selected exercise
-  - Loading states
+- Reads video URL from query parameter (`?url=...`)
+- Converts YouTube URLs to embed format automatically:
+  - `youtube.com/watch?v=VIDEO_ID` → `youtube.com/embed/VIDEO_ID`
+  - `youtu.be/VIDEO_ID` → `youtube.com/embed/VIDEO_ID`
+- Uses `usePostFitnessVideo` from `ExerciseReactQuery` to fetch analysis data
+  - Makes POST request to `http://127.0.0.1:5000/exercises`
+  - Passes original URL (not embed URL) to API
+  - Uses converted embed URL for video player display
+- Displays loading state with spinner while processing
+- Displays error state if API call fails (shows error.message)
+- Auto-selects "Full Video" when data loads
 - Routes to appropriate sub-component based on selection:
-  - Full Video → SourceVideoCard
+  - Full Video → SourceVideoCard (with embed URL)
   - Individual Exercise → VideoSegmentEditor
 
 #### ExerciseListItem.tsx
@@ -152,12 +196,13 @@ npm run lint     # Run ESLint
 ```
 
 ## Key Features to Implement (Future)
-- [ ] Video processing backend integration
+- [ ] Complete VideoSegmentEditor component implementation
 - [ ] User authentication system
 - [ ] Document export functionality (PDF, Word)
 - [ ] User dashboard for saved workouts
 - [ ] Payment integration for pricing plans
-- [ ] API endpoints for video analysis
+- [ ] Better error handling page for invalid video URLs
+- [x] QueryClientProvider setup in layout for React Query ✓
 
 ## Styling Conventions
 - Use Tailwind CSS utility classes
@@ -193,12 +238,13 @@ interface AnalysisData {
 **Note**: First exercise in array should always be "Full Video" with id `full-video`
 
 ## State Management
-- Currently using React useState for form inputs and VideoUploader state
-- No global state management yet (consider Zustand or Context API for future features)
-- VideoUploader manages:
-  - analysisData: API response data
-  - selectedExerciseId: Currently viewed exercise
-  - isLoading: API call loading state
+- Uses **TanStack Query (React Query)** for server state management
+  - Handles caching, loading, and error states automatically
+  - Query keys: `['postFitnessVideo', url]`, `['getExerciseData', url]`
+- Local component state with React useState:
+  - UploaderBox: `url` (form input)
+  - VideoUploader: `selectedExerciseId` (currently viewed exercise)
+- No global state management yet (consider Zustand or Context API for future user/auth state)
 
 ## Notes
 - All components are server components except UploaderBox (needs 'use client')

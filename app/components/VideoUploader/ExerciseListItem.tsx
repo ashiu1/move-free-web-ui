@@ -1,11 +1,7 @@
+import { Exercise } from '@/app/apis/types';
+
 interface ExerciseListItemProps {
-  exercise: {
-    id: string;
-    name: string;
-    startTime?: string;
-    endTime?: string;
-    duration?: string;
-  };
+  exercise: Exercise;
   isSelected: boolean;
   onClick: () => void;
   isFullVideo: boolean;
@@ -80,13 +76,15 @@ export default function ExerciseListItem({
             {exercise.name}
           </h3>
 
-          {isFullVideo ? (
+          <p className="mt-1 text-xs text-gray-500">{exercise.timestamp}</p>
+
+          {/* {isFullVideo ? (
             <p className="mt-1 text-xs text-gray-500">{exercise.duration}</p>
           ) : (
             <p className="mt-1 text-xs text-gray-500">
               {exercise.startTime} - {exercise.endTime}
             </p>
-          )}
+          )} */}
 
           {isFullVideo && (
             <p className="mt-1 text-xs text-green-600 font-medium">

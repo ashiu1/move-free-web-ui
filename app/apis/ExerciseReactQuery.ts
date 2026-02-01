@@ -5,7 +5,7 @@ import {
   QueryClient,
   QueryClientProvider,
 } from '@tanstack/react-query'
-import { getExerciseData, postFitnessVideo } from './ExerciseApi.js'
+import { getExerciseData, postFitnessVideo } from './ExerciseApi'
 
 export const useExerciseData = (url: string) => {
   return useQuery({
