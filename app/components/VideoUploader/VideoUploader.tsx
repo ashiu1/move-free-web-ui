@@ -7,7 +7,6 @@ import {Exercise} from '@/app/apis/types'
 import ExerciseListItem from './ExerciseListItem';
 import SourceVideoCard from './SourceVideoCard';
 import VideoSegmentEditor from './VideoSegmentEditor';
-import { ApiError } from 'next/dist/server/api-utils';
 
 
 interface AnalysisData {
@@ -154,7 +153,7 @@ export default function VideoUploader() {
                 totalSegments={analysisData?.exercises.length || 0}
               />
             ) : (
-              <VideoSegmentEditor exercise={selectedExercise} />
+              <VideoSegmentEditor exercise={selectedExercise} videoUrl={videoEmbedUrl} />
             )}
           </div>
         ) : (

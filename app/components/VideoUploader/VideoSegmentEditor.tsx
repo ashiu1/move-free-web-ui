@@ -1,54 +1,109 @@
+import { Exercise } from '@/app/apis/types';
+
 interface VideoSegmentEditorProps {
-  exercise: {
-    id: string;
-    name: string;
-    startTime?: string;
-    endTime?: string;
-    duration?: string;
-  };
+  exercise: Exercise;
+  videoUrl: string;
+}
+
+/**
+ * Parses timestamp string in format "mm:ss - mm:ss" and returns start time in seconds
+ * @param timestamp - Time range string (e.g., "01:30 - 02:45")
+ * @returns Start time in seconds
+ */
+function parseStartTime(timestamp: string | undefined): number {
+  if (!timestamp) return 0;
+
+  try {
+    // Split by " - " to get the start time
+    const startTimeStr = timestamp.split(' - ')[0].trim();
+
+    // Split by ":" to get minutes and seconds
+    const parts = startTimeStr.split(':');
+    const minutes = parseInt(parts[0], 10);
+    const seconds = parseInt(parts[1], 10);
+
+    // Check for invalid numbers
+    if (isNaN(minutes) || isNaN(seconds)) {
+      return 0;
+    }
+
+    // Convert to total seconds
+    return minutes * 60 + seconds;
+  } catch {
+    return 0;
+  }
+}
+
+/**
+ * Adds start time parameter to YouTube embed URL
+ * @param embedUrl - YouTube embed URL
+ * @param startSeconds - Start time in seconds
+ * @returns URL with start parameter
+ */
+function addStartTimeToUrl(embedUrl: string, startSeconds: number): string {
+  if (startSeconds === 0) return embedUrl;
+
+  const separator = embedUrl.includes('?') ? '&' : '?';
+  return `${embedUrl}${separator}start=${startSeconds}`;
 }
 
 export default function VideoSegmentEditor({
   exercise,
+  videoUrl,
 }: VideoSegmentEditorProps) {
+  const startTimeSeconds = parseStartTime(exercise.timestamp);
+  const videoUrlWithStart = addStartTimeToUrl(videoUrl, startTimeSeconds);
+
   return (
     <div className="mx-auto max-w-5xl">
-      {/* Placeholder for VideoSegmentEditor */}
-      <div className="rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 p-12 text-center">
-        <div className="mx-auto max-w-md">
-          <div className="mb-4 flex justify-center">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gray-200">
-              <svg
-                className="h-8 w-8 text-gray-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
-                />
-              </svg>
-            </div>
-          </div>
-          <h3 className="mb-2 text-xl font-bold text-gray-900">
-            {exercise.name}
-          </h3>
-          <p className="mb-4 text-sm text-gray-500">
-            Time: {exercise.startTime} - {exercise.endTime} (
-            {exercise.duration})
-          </p>
-          <div className="rounded-lg bg-blue-50 p-4">
-            <p className="text-sm text-blue-800">
-              <strong>Component Under Development</strong>
-              <br />
-              VideoSegmentEditor will display exercise details, video clip,
-              coaching tips, and editing tools here.
+      {/* Video Player Section */}
+      <div className="mb-6">
+        <div className="aspect-video w-full overflow-hidden rounded-lg bg-black shadow-lg">
+          <iframe
+            src={videoUrlWithStart}
+            className="h-full w-full"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            title={exercise.name}
+          />
+        </div>
+      </div>
+
+      {/* Exercise Details */}
+      <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+        <div className="mb-4 flex items-start justify-between">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900">{exercise.name}</h2>
+            <p className="mt-1 text-sm text-gray-500">
+              Time Range: {exercise.timestamp || 'N/A'}
             </p>
           </div>
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100">
+            <svg
+              className="h-5 w-5 text-green-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M5 13l4 4L19 7"
+              />
+            </svg>
+          </div>
         </div>
+
+        {/* Exercise Description */}
+        {exercise.description && (
+          <div className="mt-6">
+            <h3 className="mb-2 text-sm font-semibold uppercase tracking-wide text-gray-500">
+              Description
+            </h3>
+            <p className="text-gray-700 leading-relaxed">{exercise.description}</p>
+          </div>
+        )}
       </div>
     </div>
   );
