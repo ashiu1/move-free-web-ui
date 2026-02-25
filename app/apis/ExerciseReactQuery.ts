@@ -15,10 +15,10 @@ export const useExerciseData = (url: string) => {
   });
 };
 
-export const usePostFitnessVideo = (url: string) => {
+export const usePostFitnessVideo = (url: string, userId?: string) => {
   return useQuery({
-    queryKey: ['postFitnessVideo', url],
-    queryFn: () => postFitnessVideo(url),
+    queryKey: ['postFitnessVideo', url, userId],
+    queryFn: () => postFitnessVideo(url, userId),
     enabled: !!url, // Only run query if url is provided
   });
 };

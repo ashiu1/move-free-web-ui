@@ -21,16 +21,21 @@ export const getExerciseData = async (url: string) => {
   }
 };
 
-export const postFitnessVideo = async (url: string) => {
+export const postFitnessVideo = async (url: string, userId?: string) => {
   try {
+    const requestBody = {
+      url: url,
+      userId: userId,
+    };
+
+    console.log('postFitnessVideo - Request body:', requestBody);
+
     const response = await fetch(`${SAMPLE_URL}/exercises`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        url: url,
-      }),
+      body: JSON.stringify(requestBody),
     });
 
     if (!response.ok) {

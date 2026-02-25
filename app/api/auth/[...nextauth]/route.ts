@@ -1,7 +1,7 @@
 import NextAuth from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import type { NextAuthOptions } from 'next-auth';
-import { registerUser, loginUser } from '@/app/apis/AuthApi';
+import { createClient } from '@/app/utils/supabase/server';
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -16,25 +16,27 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async signIn({ user, account }) {
-      // Handle Google authentication - supports both login and signup
-      if (account?.provider === 'google' && user.email && user.name) {
-        // TODO: This seems wrong, login or signup should be passed in as a param instead of try catching
+      // Handle Google authentication with Supabase
+      if (account?.provider === 'google' && account.id_token) {
         try {
-          // Try to login first (existing user)
-          let result;
-          try {
-            result = await loginUser(user.email);
-          } catch (loginError) {
-            // User doesn't exist, register them (new user)
-            result = await registerUser(user.email, user.name);
+          const supabase = await createClient();
+
+          const { data, error } = await supabase.auth.signInWithIdToken({
+            provider: 'google',
+            token: account.id_token,
+          });
+
+          if (error) {
+            return false;
           }
 
-          // Store the Supabase user ID on the user object
-          user.userId = result.id;
-          return true;
+          if (data.user) {
+            user.userId = data.user.id;
+            return true;
+          }
+
+          return false;
         } catch (error) {
-          console.error('Failed to authenticate user:', error);
-          // Block sign-in if both login and registration fail
           return false;
         }
       }
@@ -42,7 +44,6 @@ export const authOptions: NextAuthOptions = {
     },
 
     async jwt({ token, user }) {
-      // Add user ID to JWT token when user signs in
       if (user?.userId) {
         token.userId = user.userId;
       }
@@ -50,7 +51,6 @@ export const authOptions: NextAuthOptions = {
     },
 
     async session({ session, token }) {
-      // Add user ID from JWT to session object
       if (token.userId && session.user) {
         session.user.userId = token.userId;
         session.user.id = token.userId;

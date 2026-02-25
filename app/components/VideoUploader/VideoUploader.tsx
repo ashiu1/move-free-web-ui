@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import { usePostFitnessVideo } from '@/app/apis/ExerciseReactQuery';
 import {Exercise} from '@/app/apis/types'
 import ExerciseListItem from './ExerciseListItem';
@@ -15,6 +16,17 @@ interface AnalysisData {
 
 export default function VideoUploader() {
   const [selectedExerciseIndex, setSelectedExerciseIndex] = useState<number>(0);
+
+  // Get user session
+  const { data: session, status } = useSession();
+  const userId = session?.user?.userId;
+
+  // Debug: Log session information
+  useEffect(() => {
+    console.log('Session status:', status);
+    console.log('Session data:', session);
+    console.log('User ID:', userId);
+  }, [session, status, userId]);
 
   // Read URL from query params
   const searchParams = useSearchParams();
@@ -53,7 +65,7 @@ export default function VideoUploader() {
   const videoEmbedUrl = urlParam ? convertToEmbedUrl(urlParam) : 'https://www.youtube.com/embed/dQw4w9WgXcQ';
 
   // Fetch video analysis data using React Query
-  const { data: analysisData, isLoading, error, isError } = usePostFitnessVideo(urlParam || '') as {
+  const { data: analysisData, isLoading, error, isError } = usePostFitnessVideo(urlParam || '', userId) as {
     data: AnalysisData | undefined;
     isLoading: boolean;
     error: Error | null;
