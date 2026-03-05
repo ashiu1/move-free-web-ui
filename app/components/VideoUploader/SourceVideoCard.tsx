@@ -16,24 +16,24 @@ export default function SourceVideoCard({
       {/* Stats Header */}
       <div className="mb-6 grid grid-cols-3 gap-4">
         <div className="rounded-lg border border-gray-200 bg-white p-4">
-          <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+          <p className="text-xs font-medium text-black uppercase tracking-wide">
             Analysis Status
           </p>
-          <p className="mt-2 text-2xl font-bold text-gray-900">{status}</p>
+          <p className="mt-2 text-2xl font-bold text-black">{status}</p>
         </div>
 
         <div className="rounded-lg border border-gray-200 bg-white p-4">
-          <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+          <p className="text-xs font-medium text-black uppercase tracking-wide">
             AI Confidence
           </p>
-          <p className="mt-2 text-2xl font-bold text-gray-900">{confidence}%</p>
+          <p className="mt-2 text-2xl font-bold text-black">{confidence}%</p>
         </div>
 
         <div className="rounded-lg border border-gray-200 bg-white p-4">
-          <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+          <p className="text-xs font-medium text-black uppercase tracking-wide">
             Total Segments
           </p>
-          <p className="mt-2 text-2xl font-bold text-gray-900">
+          <p className="mt-2 text-2xl font-bold text-black">
             {totalSegments} Clips
           </p>
         </div>
@@ -72,10 +72,10 @@ export default function SourceVideoCard({
               </svg>
             </button>
             <div>
-              <p className="text-sm font-semibold text-gray-900">
+              <p className="text-sm font-semibold text-black">
                 Full Workout Analysis
               </p>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-black">
                 All {totalSegments} segments detected and analyzed
               </p>
             </div>

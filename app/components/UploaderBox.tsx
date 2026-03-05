@@ -19,14 +19,14 @@ export default function UploaderBox() {
     <section className="w-full bg-gradient-to-b from-blue-50 to-white py-20">
       <div className="mx-auto max-w-5xl px-6">
         <div className="text-center">
-          <h1 className="mb-4 text-5xl font-bold tracking-tight text-gray-900 md:text-6xl">
+          <h1 className="mb-4 text-5xl font-bold tracking-tight text-black md:text-6xl">
             Transform Your Workout
             <br />
             <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
               Videos Into Guides
             </span>
           </h1>
-          <p className="mb-10 text-lg text-gray-600 md:text-xl">
+          <p className="mb-10 text-lg text-black md:text-xl">
             Convert any fitness video into step-by-step workout documentation.
             <br />
             AI-powered analysis with no manual editing needed.
@@ -37,7 +37,7 @@ export default function UploaderBox() {
               <div className="flex flex-col gap-3 md:flex-row">
                 <div className="relative flex-1">
                   <svg
-                    className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400"
+                    className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-black"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -54,7 +54,7 @@ export default function UploaderBox() {
                     value={url}
                     onChange={(e) => setUrl(e.target.value)}
                     placeholder="Paste your video URL here (YouTube, Vimeo, etc.)"
-                    className="w-full rounded-lg border border-gray-300 py-4 pl-12 pr-4 text-base transition-all focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                    className="w-full rounded-lg border border-gray-300 py-4 pl-12 pr-4 text-base text-black transition-all focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
                   />
                 </div>
                 <button
@@ -64,7 +64,7 @@ export default function UploaderBox() {
                   Process Video
                 </button>
               </div>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-black">
                 Supports YouTube, Vimeo, and direct video links
               </p>
             </form>
