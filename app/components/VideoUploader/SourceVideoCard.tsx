@@ -80,10 +80,6 @@ export default function SourceVideoCard({
               </p>
             </div>
           </div>
-
-          <button className="rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-6 py-2.5 text-sm font-semibold text-white shadow-lg transition-all hover:shadow-xl">
-            Export All
-          </button>
         </div>
       </div>
     </div>
