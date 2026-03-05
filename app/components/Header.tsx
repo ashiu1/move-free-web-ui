@@ -30,7 +30,10 @@ export default function Header() {
     <>
       <header className="w-full border-b border-gray-200 bg-white">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-          <Link href="/" className="flex items-center gap-2 transition-opacity hover:opacity-80">
+          <Link
+            href="/"
+            className="flex items-center gap-2 transition-opacity hover:opacity-80"
+          >
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-purple-600">
               <span className="text-xl font-bold text-white">M</span>
             </div>
@@ -38,13 +41,22 @@ export default function Header() {
           </Link>
 
           <nav className="hidden items-center gap-8 md:flex">
-            <a href="#how-it-works" className="text-sm font-medium text-gray-600 transition-colors hover:text-gray-900">
+            <a
+              href="#how-it-works"
+              className="text-sm font-medium text-gray-600 transition-colors hover:text-gray-900"
+            >
               How It Works
             </a>
-            <a href="#features" className="text-sm font-medium text-gray-600 transition-colors hover:text-gray-900">
+            <a
+              href="#features"
+              className="text-sm font-medium text-gray-600 transition-colors hover:text-gray-900"
+            >
               Features
             </a>
-            <a href="#pricing" className="text-sm font-medium text-gray-600 transition-colors hover:text-gray-900">
+            <a
+              href="#pricing"
+              className="text-sm font-medium text-gray-600 transition-colors hover:text-gray-900"
+            >
               Pricing
             </a>
           </nav>
@@ -89,14 +101,21 @@ export default function Header() {
                 {isDropdownOpen && (
                   <div className="absolute right-0 mt-2 w-56 rounded-lg border border-gray-200 bg-white shadow-lg">
                     <div className="border-b border-gray-100 px-4 py-3">
-                      <p className="text-sm font-medium text-gray-900">{session.user?.name || 'User'}</p>
-                      <p className="text-xs text-gray-500">{session.user?.email || ''}</p>
+                      <p className="text-sm font-medium text-gray-900">
+                        {session.user?.name || 'User'}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        {session.user?.email || ''}
+                      </p>
                     </div>
                     <div className="py-1">
                       <button className="w-full px-4 py-2 text-left text-sm text-gray-700 transition-colors hover:bg-gray-50">
                         My Account
                       </button>
-                      <button className="w-full px-4 py-2 text-left text-sm text-gray-700 transition-colors hover:bg-gray-50">
+                      <button
+                        onClick={() => router.push('/library')}
+                        className="w-full px-4 py-2 text-left text-sm text-gray-700 transition-colors hover:bg-gray-50"
+                      >
                         Saved Workouts
                       </button>
                       <button className="w-full px-4 py-2 text-left text-sm text-gray-700 transition-colors hover:bg-gray-50">
