@@ -5,7 +5,7 @@ import {
   QueryClient,
   QueryClientProvider,
 } from '@tanstack/react-query'
-import { getExerciseData, postFitnessVideo, uploadExercises } from './ExerciseApi'
+import { getExerciseData, postFitnessVideo, postFitnessFile, uploadExercises } from './ExerciseApi'
 
 export const useExerciseData = (url: string) => {
   return useQuery({
@@ -20,6 +20,13 @@ export const usePostFitnessVideo = (url: string, userId?: string) => {
     queryKey: ['postFitnessVideo', url, userId],
     queryFn: () => postFitnessVideo(url, userId),
     enabled: !!url, // Only run query if url is provided
+  });
+};
+
+export const usePostFitnessFile = () => {
+  return useMutation({
+    mutationFn: ({ file, userId }: { file: File; userId?: string }) =>
+      postFitnessFile(file, userId),
   });
 };
 
