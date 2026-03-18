@@ -53,11 +53,18 @@ export const postFitnessVideo = async (url: string, userId?: string) => {
   }
 };
 
-export const uploadExercises = async (analysisData: any, userId?: string) => {
+export const uploadExercises = async (
+  analysisData: any,
+  userId?: string,
+  videoUrl?: string,
+  source?: string
+) => {
   try {
     const requestBody = {
       ...analysisData,
       userId: userId,
+      videoUrl: videoUrl,
+      source: source,
     };
 
     console.log('uploadExercises - Request body:', requestBody);

@@ -25,7 +25,16 @@ export const usePostFitnessVideo = (url: string, userId?: string) => {
 
 export const useUploadExercises = () => {
   return useMutation({
-    mutationFn: ({ analysisData, userId }: { analysisData: any; userId?: string }) =>
-      uploadExercises(analysisData, userId),
+    mutationFn: ({
+      analysisData,
+      userId,
+      videoUrl,
+      source,
+    }: {
+      analysisData: any;
+      userId?: string;
+      videoUrl?: string;
+      source?: string;
+    }) => uploadExercises(analysisData, userId, videoUrl, source),
   });
 };
